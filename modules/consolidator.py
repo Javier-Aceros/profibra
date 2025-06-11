@@ -41,24 +41,25 @@ class Consolidator:
             dfs = []
             for marca in ['STIHL', 'SUZUKI', 'YAMAHA']:
                 df_marca = self.file_processor.leer_archivo_marca(archivos_requeridos[marca], marca)
-                df_marca['STIHL'] = 0
-                df_marca['SUZUKI'] = 0
-                df_marca['YAMAHA'] = 0
-                df_marca[marca] = df_marca['CANTIDAD']
                 dfs.append(df_marca)
 
             df_siigo = self.file_processor.leer_archivo_siigo(archivos_requeridos['VALORACION'])
-            df_siigo['STIHL'] = 0
-            df_siigo['SUZUKI'] = 0
-            df_siigo['YAMAHA'] = 0
-            df_siigo['SIIGO'] = df_siigo['CANTIDAD']
             dfs.append(df_siigo)
 
+            # Consolidar datos y limpiar valores 'nan'
             consolidado = pd.concat(dfs, ignore_index=True)
+            
+            # Limpiar valores 'nan' en las columnas de texto
+            text_columns = ['REFERENCIA', 'DESCRIPCION', 'UBICACION', 'CODIGO_SIIGO', 'ORIGEN']
+            for col in text_columns:
+                if col in consolidado.columns:
+                    consolidado[col] = consolidado[col].replace('nan', '').fillna('')
 
+            # Crear carpeta 'outputs' si no existe
             output_dir = Path("outputs")
             output_dir.mkdir(exist_ok=True)
 
+            # Guardar consolidado
             consolidado_file = output_dir / "Consolidado_Inventarios.xlsx"
             with pd.ExcelWriter(consolidado_file, engine='openpyxl') as writer:
                 consolidado.to_excel(writer, sheet_name='Consolidado', index=False)
