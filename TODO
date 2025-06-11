@@ -1,9 +1,4 @@
-Mover estos comentarios a un TODO
-
-Verificar que el inventario manual si este funcionando
-
 consolidado:
-Separar el funcionamiento
 hay nombres que dicen "nan" cuando vengan vacíos deben quedar vacíos
 hay cuatro columnas al final del archivo que sobran STIHL	SUZUKI	YAMAHA	SIIGO
 

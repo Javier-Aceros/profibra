@@ -1,0 +1,5 @@
+Actualmente recibe 4 archivos específicos que son leídos desde la carpeta "inputs", podría modificarse el comportamiento para ser arrastrados, pero en la actualidad es la manera mas rápida y sencilla de uso.
+Crea dos archivos en la carpeta "outputs" un archivo de consolidado donde se junta toda la información de los archivos originales y hace una limpieza de datos mínima y otro archivo donde se el análisis de los datos que están en el primer archivo
+En el archivo de análisis:
+Los ítems que no tienen marca es porque no aparecen en los listados físicos
+Los ítems que no tienen código de Siigo es porque no aparecen en Siigo
