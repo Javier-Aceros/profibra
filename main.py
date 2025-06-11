@@ -11,7 +11,9 @@ class Aplicacion:
     def __init__(self, ventana):
         self.ventana = ventana
         self.configurar_interfaz()
-        self.logger = Logger(ventana)
+        
+        # Inicializar logger después de configurar la interfaz
+        self.logger = Logger(self.log_frame)  # Pasamos el frame directamente
         
         # Inicializar los procesadores
         self.file_processor = FileProcessor(self.logger)
@@ -25,46 +27,52 @@ class Aplicacion:
             length=300, 
             mode="determinate"
         )
-        self.progress.pack(pady=10)
+        self.progress.pack(pady=5)
         self.progress.pack_forget()  # Ocultar inicialmente
     
     def configurar_interfaz(self):
         self.ventana.title("Sistema de Comparación de Inventarios")
-        self.ventana.geometry("800x600")
+        self.ventana.geometry("800x600")  # Tamaño ajustado
         
-        # Frame principal para mejor organización
+        # Frame principal
         main_frame = ttk.Frame(self.ventana)
-        main_frame.pack(pady=20, padx=20, fill="both", expand=True)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        # Frame superior para controles
+        top_frame = ttk.Frame(main_frame)
+        top_frame.pack(fill="x", pady=(0, 10))  # Espacio solo abajo
         
         # Título
         ttk.Label(
-            main_frame, 
+            top_frame, 
             text="Comparador de Inventarios Automático", 
             font=("Segoe UI", 14, "bold")
-        ).pack(pady=10)
+        ).pack(pady=(0, 5))  # Espacio solo abajo
 
         # Instrucciones
         ttk.Label(
-            main_frame, 
+            top_frame, 
             text="La aplicación leerá automáticamente los archivos Excel de la carpeta 'inputs'",
             font=("Segoe UI", 10)
-        ).pack(pady=5)
+        ).pack(pady=(0, 2))  # Espacio solo abajo
 
         ttk.Label(
-            main_frame,
+            top_frame,
             text="Archivos requeridos en 'inputs/': STIHL.xlsx, SUZUKI.xlsx, YAMAHA.xlsx, Valoración de inventarios.xlsx",
             font=("Segoe UI", 9)
-        ).pack(pady=5)
+        ).pack(pady=(0, 10))  # Espacio solo abajo
 
         # Botón de inicio
         ttk.Button(
-            main_frame, 
+            top_frame, 
             text="Iniciar Proceso", 
             command=self.iniciar_proceso,
             style="primary.TButton"
-        ).pack(pady=20)
+        ).pack(pady=(0, 10))  # Espacio solo abajo
         
-        # Área de logs (puedes usar el Logger que ya tienes implementado)
+        # Frame para el log (ocupará el espacio restante)
+        self.log_frame = ttk.Frame(main_frame)
+        self.log_frame.pack(fill="both", expand=True)
     
     def actualizar_progreso(self, valor, mensaje):
         """Actualiza la barra de progreso y muestra un mensaje"""
@@ -74,7 +82,7 @@ class Aplicacion:
     
     def iniciar_proceso(self):
         try:
-            self.progress.pack(pady=10)  # Mostrar barra de progreso
+            self.progress.pack(pady=5)
             self.actualizar_progreso(10, "Iniciando proceso de consolidación...")
             
             # Paso 1: Crear consolidado
@@ -97,7 +105,6 @@ class Aplicacion:
                 f"Los archivos se encuentran en la carpeta 'outputs'"
             )
             
-            # Reiniciar progreso
             self.progress["value"] = 0
             self.progress.pack_forget()
                 
