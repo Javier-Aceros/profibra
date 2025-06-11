@@ -1,10 +1,11 @@
-Crear proyecto en git
+Mover estos comentarios a un TODO
+
+Verificar que el inventario manual si este funcionando
 
 consolidado:
 Separar el funcionamiento
 hay nombres que dicen "nan" cuando vengan vacíos deben quedar vacíos
 hay cuatro columnas al final del archivo que sobran STIHL	SUZUKI	YAMAHA	SIIGO
-
 
 Análisis comparativo:
 las columnas STIHL	SUZUKI	YAMAHA sobran
@@ -13,6 +14,7 @@ en la columna diferencia cuando los valores sean positivos en verde, cuando sean
 el funcionamiento de la marca esta mal, debería poner como marca el origen cuando no sea siigo
 el código del producto lo deberían tener todos los productos
 
-
 eliminar los archivos que están en la nube y montar los nuevos
-Verificar que el inventario manual si este funcionando
+
+Crear el excel para subir el inventario manual de forma automatica
+
