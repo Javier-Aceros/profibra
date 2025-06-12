@@ -14,11 +14,20 @@ class ComparativeAnalyzer:
         try:
             self.logger.agregar_log(f"\nProcesando archivo consolidado: {ruta_consolidado}...")
 
-            df = pd.read_excel(ruta_consolidado, sheet_name="Consolidado")
+            df = pd.read_excel(
+                ruta_consolidado,
+                sheet_name="Consolidado",
+                dtype={'CODIGO_SIIGO': str}
+            )
 
             df.columns = df.columns.str.strip()
             df["REFERENCIA"] = df["REFERENCIA"].fillna("").astype(str).str.strip().replace("nan", "")
             
+            df["CODIGO_SIIGO"] = df["CODIGO_SIIGO"].apply(
+                lambda x: f"{int(float(x)):013d}" if str(x).replace('.', '').isdigit() 
+                else str(x).strip().replace("nan", "")
+            )
+
             df_con_ref = df[df["REFERENCIA"] != ""].copy()
             df_sin_ref = df[df["REFERENCIA"] == ""].copy()
 
@@ -64,12 +73,13 @@ class ComparativeAnalyzer:
                         ))
                     )
 
-                    codigos_siigo = ", ".join(
-                        sorted(set(
-                            grupo["CODIGO_SIIGO"]
-                            .dropna().astype(str).str.strip().replace("nan", "")
-                        ))
-                    )
+                    codigos_validos = []
+                    for codigo in grupo["CODIGO_SIIGO"]:
+                        codigo_str = str(codigo).strip()
+                        if codigo_str and codigo_str.lower() != "nan":
+                            codigos_validos.append(codigo_str)
+                    codigos_siigo = ", ".join(sorted(set(codigos_validos)))
+
                     
                     registros.append({
                         "REFERENCIA": ref,
@@ -112,7 +122,7 @@ class ComparativeAnalyzer:
                 
                 ws = writer.sheets['Comparativo']
                 
-                for row in ws.iter_rows(min_row=2, min_col=6, max_col=6):  # DIFERENCIA
+                for row in ws.iter_rows(min_row=2, min_col=6, max_col=6):
                     for cell in row:
                         if cell.value > 0:
                             cell.fill = self.verde

@@ -1,3 +1,6 @@
-Crear el excel para subir el inventario manual de forma automatica
+cambios en excel para importar conteo manual:
+la hoja se debe llamar datos
+debe sacar los ítems de las otras bodegas
 
 Crear README
+Cambiar los colores de la diferencia en los datos sin referencia del archivo de analisis 
