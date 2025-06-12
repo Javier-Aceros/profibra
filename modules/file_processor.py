@@ -86,7 +86,8 @@ class FileProcessor:
         try:
             self.logger.agregar_log(f"Procesando archivo de valoración: {archivo.name}...")
 
-            df_raw = pd.read_excel(archivo, header=None)
+            df_raw = pd.read_excel(archivo, header=None, dtype={0: str})
+            
             fila_encabezados = None
             for i, fila in df_raw.iterrows():
                 valores = [str(cell).upper().strip() for cell in fila.values]
@@ -104,7 +105,7 @@ class FileProcessor:
                 self.logger.agregar_log(f"Primeras filas del archivo:\n{muestra}")
                 raise ValueError("No se encontró una fila con todos los encabezados requeridos")
 
-            df = pd.read_excel(archivo, header=fila_encabezados)
+            df = pd.read_excel(archivo, header=fila_encabezados, dtype={'Código producto': str})
             df.columns = df.columns.str.upper().str.strip()
 
             mapeo_columnas = {

@@ -53,7 +53,8 @@ class Consolidator:
             text_columns = ['REFERENCIA', 'DESCRIPCION', 'UBICACION', 'CODIGO_SIIGO', 'ORIGEN']
             for col in text_columns:
                 if col in consolidado.columns:
-                    consolidado[col] = consolidado[col].replace('nan', '').fillna('')
+                    # Para todas las columnas de texto, incluyendo CODIGO_SIIGO
+                    consolidado[col] = consolidado[col].replace('nan', '').fillna('').astype(str)
 
             # Crear carpeta 'outputs' si no existe
             output_dir = Path("outputs")

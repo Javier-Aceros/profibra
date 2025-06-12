@@ -17,16 +17,14 @@ class ComparativeAnalyzer:
             df = pd.read_excel(
                 ruta_consolidado,
                 sheet_name="Consolidado",
-                dtype={'CODIGO_SIIGO': str}
+                dtype={'CODIGO_SIIGO': str}  # Forzar lectura como string
             )
 
             df.columns = df.columns.str.strip()
             df["REFERENCIA"] = df["REFERENCIA"].fillna("").astype(str).str.strip().replace("nan", "")
             
-            df["CODIGO_SIIGO"] = df["CODIGO_SIIGO"].apply(
-                lambda x: f"{int(float(x)):013d}" if str(x).replace('.', '').isdigit() 
-                else str(x).strip().replace("nan", "")
-            )
+            # Modificación clave: Eliminar la transformación que agregaba ceros
+            df["CODIGO_SIIGO"] = df["CODIGO_SIIGO"].fillna("").astype(str).str.strip().replace("nan", "")
 
             df_con_ref = df[df["REFERENCIA"] != ""].copy()
             df_sin_ref = df[df["REFERENCIA"] == ""].copy()
@@ -80,7 +78,6 @@ class ComparativeAnalyzer:
                             codigos_validos.append(codigo_str)
                     codigos_siigo = ", ".join(sorted(set(codigos_validos)))
 
-                    
                     registros.append({
                         "REFERENCIA": ref,
                         "DESCRIPCION": descripcion,
