@@ -25,6 +25,7 @@ class PhysicalCountImporter:
                     ubicacion = str(row["UBICACION_SIIGO"]).strip()
                 return f"{descripcion} ({ubicacion})" if ubicacion else descripcion
 
+            # Create the base dataframe
             df_import = pd.DataFrame({
                 "Código del producto \n(obligatorio) ": df["CODIGO_SIIGO"],
                 "Nombre del producto / Servicio": df.apply(construir_nombre, axis=1),
@@ -33,8 +34,34 @@ class PhysicalCountImporter:
                 "Existencias contadas \n(obligatorio)": df["INVENTARIO MANUAL"]
             })
 
+            # Create additional rows for each item
+            df_ecommerce = pd.DataFrame({
+                "Código del producto \n(obligatorio) ": df["CODIGO_SIIGO"],
+                "Nombre del producto / Servicio": df.apply(construir_nombre, axis=1),
+                "Referencia de fábrica": df["REFERENCIA"],
+                "Código de Bodega": "1-E-COMMERCE",
+                "Existencias contadas \n(obligatorio)": 0
+            })
+
+            df_empty_warehouse = pd.DataFrame({
+                "Código del producto \n(obligatorio) ": df["CODIGO_SIIGO"],
+                "Nombre del producto / Servicio": df.apply(construir_nombre, axis=1),
+                "Referencia de fábrica": df["REFERENCIA"],
+                "Código de Bodega": "",
+                "Existencias contadas \n(obligatorio)": 0
+            })
+
+            # Concatenate all dataframes
+            df_final = pd.concat([df_import, df_ecommerce, df_empty_warehouse], ignore_index=True)
+
+            # Sort by product code to keep related items together
+            df_final.sort_values(by="Código del producto \n(obligatorio) ", inplace=True)
+
             output_path = Path("outputs") / "Importacion_conteo_fisico.xlsx"
-            df_import.to_excel(output_path, index=False)
+            
+            # Write to Excel with sheet name "Datos"
+            with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
+                df_final.to_excel(writer, sheet_name="Datos", index=False)
 
             self.logger.agregar_log(f"Archivo de importación generado: {output_path}", "exito")
             return output_path
