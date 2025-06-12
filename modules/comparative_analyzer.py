@@ -17,7 +17,7 @@ class ComparativeAnalyzer:
             df = pd.read_excel(ruta_consolidado, sheet_name="Consolidado")
 
             df.columns = df.columns.str.strip()
-            df["REFERENCIA"] = df["REFERENCIA"].astype(str).str.strip().replace("nan", "")
+            df["REFERENCIA"] = df["REFERENCIA"].fillna("").astype(str).str.strip().replace("nan", "")
             
             df_con_ref = df[df["REFERENCIA"] != ""].copy()
             df_sin_ref = df[df["REFERENCIA"] == ""].copy()
@@ -88,11 +88,10 @@ class ComparativeAnalyzer:
                 tabla_final = pd.DataFrame(columns=columnas_finales)
 
             if not df_sin_ref.empty:
-                sin_ref_marcas = df_sin_ref[df_sin_ref["ORIGEN"].isin(["STIHL", "SUZUKI", "YAMAHA"])]
+                sin_ref_processed = df_sin_ref.copy()
 
-                sin_ref_processed = sin_ref_marcas.copy()
-                sin_ref_processed['INVENTARIO MANUAL'] = sin_ref_processed['CANTIDAD']
-                sin_ref_processed['SIIGO'] = 0
+                sin_ref_processed['INVENTARIO MANUAL'] = 0
+                sin_ref_processed['SIIGO'] = sin_ref_processed['CANTIDAD']
                 sin_ref_processed['DIFERENCIA'] = sin_ref_processed['CANTIDAD']
                 sin_ref_processed['UBICACION_MARCAS'] = sin_ref_processed['UBICACION'].apply(
                     lambda x: str(x).strip() if str(x).strip().lower() not in ["", "nan"] else ""
